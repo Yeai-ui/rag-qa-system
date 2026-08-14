@@ -1,0 +1,141 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>智能知识问答系统</title>
+  <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+
+<!-- ========== 登录 / 注册 ========== -->
+<div id="authPage" class="auth-wrap hidden">
+  <div class="auth-card">
+    <div class="auth-logo">KB</div>
+    <h1>智能知识问答系统</h1>
+    <p class="auth-sub">基于大语言模型与检索增强生成（RAG）的领域知识问答平台</p>
+    <div class="auth-tabs">
+      <button class="auth-tab active" data-tab="login">登录</button>
+      <button class="auth-tab" data-tab="register">注册</button>
+    </div>
+    <div class="form-row">
+      <label>用户名</label>
+      <input id="authUsername" type="text" placeholder="请输入用户名" autocomplete="username">
+    </div>
+    <div class="form-row">
+      <label>密码</label>
+      <input id="authPassword" type="password" placeholder="请输入密码" autocomplete="current-password">
+    </div>
+    <button id="authSubmit" class="btn btn-primary btn-block">登录</button>
+    <div id="authError" class="auth-error"></div>
+  </div>
+</div>
+
+<!-- ========== 主应用 ========== -->
+<div id="app" class="app hidden">
+
+  <!-- 顶部导航 -->
+  <header class="topbar">
+    <div class="brand"><span class="brand-dot"></span>智能知识问答</div>
+    <nav class="nav">
+      <button class="nav-item active" data-view="chat">智能问答</button>
+      <button class="nav-item" data-view="kb">知识库管理</button>
+      <button class="nav-item" data-view="stats">数据统计</button>
+    </nav>
+    <div class="user-box">
+      <span id="usernameLabel" class="username"></span>
+      <button id="logoutBtn" class="btn btn-ghost btn-sm">退出</button>
+    </div>
+  </header>
+
+  <!-- 视图：智能问答 -->
+  <section id="view-chat" class="view chat-view">
+    <aside class="sidebar">
+      <div class="side-block">
+        <label class="side-label">选择知识库</label>
+        <select id="kbSelect" class="select"></select>
+      </div>
+      <div class="side-block side-grow">
+        <div class="side-head">
+          <label class="side-label">会话记录</label>
+          <button id="newConvBtn" class="btn btn-primary btn-sm">新对话</button>
+        </div>
+        <ul id="convList" class="conv-list"></ul>
+      </div>
+      <div class="side-block side-note">
+        <div class="side-note-title">使用提示</div>
+        <p>1. 先在「知识库管理」上传文档<br>2. 选择对应知识库提问<br>3. 回答将标注引用来源</p>
+      </div>
+    </aside>
+
+    <main class="chat-main">
+      <div id="msgList" class="msg-list">
+        <div class="welcome">
+          <div class="welcome-icon">?</div>
+          <h2>有什么可以帮您？</h2>
+          <p>上传文档构建领域知识库，即可基于资料进行智能问答，回答附带可追溯的引用来源。</p>
+        </div>
+      </div>
+      <div class="composer">
+        <div class="composer-inner">
+          <textarea id="queryInput" rows="2" placeholder="输入你的问题，Enter 发送，Shift+Enter 换行"></textarea>
+          <button id="sendBtn" class="btn btn-primary btn-send">发送</button>
+        </div>
+        <div id="composerHint" class="composer-hint"></div>
+      </div>
+    </main>
+  </section>
+
+  <!-- 视图：知识库管理 -->
+  <section id="view-kb" class="view hidden">
+    <div class="page-head">
+      <h2>知识库管理</h2>
+      <button id="newKbBtn" class="btn btn-primary">+ 新建知识库</button>
+    </div>
+    <div id="kbList" class="kb-grid"></div>
+  </section>
+
+  <!-- 视图：数据统计 -->
+  <section id="view-stats" class="view hidden">
+    <div class="page-head"><h2>数据统计</h2></div>
+    <div class="stat-cards">
+      <div class="stat-card"><div class="stat-num" id="statKb">0</div><div class="stat-label">知识库</div></div>
+      <div class="stat-card"><div class="stat-num" id="statDoc">0</div><div class="stat-label">文档</div></div>
+      <div class="stat-card"><div class="stat-num" id="statChunk">0</div><div class="stat-label">文本块</div></div>
+      <div class="stat-card"><div class="stat-num" id="statConv">0</div><div class="stat-label">会话</div></div>
+      <div class="stat-card"><div class="stat-num" id="statMsg">0</div><div class="stat-label">消息</div></div>
+    </div>
+    <div class="panel">
+      <h3>知识库文档分布</h3>
+      <div id="kbBar" class="bar-chart"></div>
+    </div>
+  </section>
+</div>
+
+<!-- 新建知识库弹窗 -->
+<div id="modalMask" class="modal-mask hidden">
+  <div class="modal">
+    <h3 id="modalTitle">新建知识库</h3>
+    <div class="form-row"><label>名称</label><input id="modalName" type="text" placeholder="如：数据结构课程资料"></div>
+    <div class="form-row"><label>描述</label><textarea id="modalDesc" rows="2" placeholder="可选，说明知识库内容范围"></textarea></div>
+    <div class="modal-actions">
+      <button id="modalCancel" class="btn btn-ghost">取消</button>
+      <button id="modalOk" class="btn btn-primary">确定</button>
+    </div>
+  </div>
+</div>
+
+<!-- 引用来源抽屉 -->
+<div id="sourceDrawer" class="drawer hidden">
+  <div class="drawer-head">
+    <span>引用来源</span>
+    <button id="sourceClose" class="btn btn-ghost btn-sm">关闭</button>
+  </div>
+  <div id="sourceBody" class="drawer-body"></div>
+</div>
+
+<div id="toast" class="toast hidden"></div>
+
+<script src="/static/app.js"></script>
+</body>
+</html>

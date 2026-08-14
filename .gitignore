@@ -1,3 +1,23 @@
+# ===== 个人文档（含答辩话术/面试策略，不公开）=====
+docs/
+
+# ===== 临时测试文件 =====
+*.json.tmp
+ask*.json
+login.json
+register.json
+kb.json
+test_doc.txt
+
+# ===== 图片与截图（防止截图误提交泄露敏感信息） =====
+*.png
+*.jpg
+*.jpeg
+*.gif
+*.bmp
+*.webp
+*.ico
+
 # ===== 敏感配置（绝不提交）=====
 .env
 .env.*

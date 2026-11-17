@@ -1,6 +1,6 @@
 # 基于大语言模型的智能领域知识问答系统（RAG）
 
-一个**可用于毕业设计、软件著作权申请、简历项目**的完整 RAG（Retrieval-Augmented Generation，检索增强生成）应用：
+RAG（Retrieval-Augmented Generation，检索增强生成）应用：
 上传领域文档（PDF / DOCX / MD / TXT）构建个人知识库，基于大模型进行**带引用来源**的智能问答。
 
 ## 功能特性
@@ -122,10 +122,6 @@ EMBEDDING_MODEL=BAAI/bge-m3
 - **回答质量不理想**：调大 `TOP_K`、减小 `CHUNK_SIZE`，或在知识库中补充更相关文档
 - **Embedding 报错 401**：检查 `.env` 中 `EMBEDDING_API_KEY`（未单独设置时复用 `LLM_API_KEY`）
 
-## 文档
-
-- `docs/毕业设计-设计方案.md` — 完整设计方案（架构图/数据库/排期/答辩要点/实验方案）
-- `docs/软著申请-技术文档模板.md` — 软件著作权申请材料模板
 
 ## 免责声明
 
